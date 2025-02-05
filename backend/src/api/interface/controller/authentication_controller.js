@@ -1,7 +1,6 @@
-import express from "express"
-import { SigninValidator, SignupValidator } from "../../config/helpers/validators"
-import { prisma } from "../../config/db"
 import bcrypt from "bcryptjs"
+import { prisma } from "../../config/db"
+import { SigninValidator, SignupValidator } from "../../config/helpers/validators"
 import { genToken } from "../../lib/jwt.config"
 
 
