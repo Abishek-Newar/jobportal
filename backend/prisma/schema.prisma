@@ -21,3 +21,69 @@ model User{
   password  String 
   type      String 
 }
+
+model userProfile{
+  id              String    @id @default(uuid())
+  phone           Int?     @unique 
+  email           String?  @unique
+  expectedSalary  Int? 
+  noticePeriod    Int? 
+  Resume          String? 
+  resumeHeadline  String? 
+  skills          String[]
+  project         Project[]
+  Education       Education[]
+  Links           Links[]
+  Publications    Publications[]
+  languages       languages[]
+}
+
+model Project{
+  id            String   @id @default(uuid())
+  title         String 
+  from          DateTime
+  to            DateTime
+  details       String 
+  userId        String
+  userProfile   userProfile    @relation(fields: [userId],references: [id])    
+}
+
+model  Education{
+  id              String @id  @default(uuid())
+  education       String 
+  specialization  String 
+  institute       String 
+  course          String 
+  courseType      String 
+  grade           Float?
+  from            DateTime
+  to              DateTime
+  userId          String 
+  userProfile     userProfile  @relation(fields: [userId],references: [id])
+}
+
+model Links{
+  id            String  @id  @default(uuid())
+  title         String
+  link          String 
+  userId        String
+  userProfile   userProfile  @relation(fields: [userId],references: [id])
+}
+
+model  Publications{
+  id            String   @id  @default(uuid())
+  title         String
+  description   String 
+  userId        String
+  userProfile   userProfile  @relation(fields: [userId],references: [id])
+}
+
+model languages{
+  id            String  @id  @default(uuid())
+  title         String 
+  read          Boolean
+  write         Boolean
+  speak         Boolean 
+  userId        String
+  userProfile   userProfile  @relation(fields: [userId],references: [id])
+}
