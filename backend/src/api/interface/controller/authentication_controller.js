@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
-import { prisma } from "../../config/db"
-import { SigninValidator, SignupValidator } from "../../config/helpers/validators"
-import { genToken } from "../../lib/jwt.config"
+import { prisma } from "../../config/db.js"
+import { SigninValidator, SignupValidator } from "../../config/helpers/validators.js"
+import { genToken } from "../../lib/jwt.config.js"
 
 
 export const SignupController = async(req,res)=>{

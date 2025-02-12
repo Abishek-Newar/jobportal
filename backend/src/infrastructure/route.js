@@ -1,8 +1,8 @@
 import express from "express"
-import { userRouter } from "../api/interface/routes/user"
-import { authRouter } from "../api/interface/routes/auth"
-import { adminRouter } from "../api/interface/routes/admin"
-import { employerRouter } from "../api/interface/routes/employer"
+import { userRouter } from "../api/interface/routes/user.js"
+import { authRouter } from "../api/interface/routes/auth.js"
+import { adminRouter } from "../api/interface/routes/admin.js"
+import { employerRouter } from "../api/interface/routes/employer.js"
 
 
 export const createRouter = () =>{
