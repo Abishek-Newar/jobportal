@@ -20,6 +20,8 @@ model User{
   email           String   @unique 
   password        String
   type            String 
+  job             Job[]
+  applied         String[]
   userProfile     UserProfile?  
 }
 
@@ -88,4 +90,29 @@ model languages{
   speak         Boolean 
   userId        String
   userProfile   UserProfile  @relation(fields: [userId],references: [id])
+}
+
+model Job{
+  id                String    @id  @default(uuid())
+  title             String 
+  pay               String 
+  jobtype           String[]
+  shift             String[]
+  location          String 
+  benefits          String[] 
+  userId            String
+  user              User    @relation(fields: [userId],references: [id])
+  jobdescription    JobDescription?
+}
+
+model JobDescription{
+  id                  String   @id   @default(uuid())
+  description         String 
+  responsibilities    String 
+  requirements        String 
+  experience          String 
+  worklocation        String 
+  deadline            DateTime
+  jobId               String   @unique
+  job                 Job       @relation(fields: [jobId],references: [id])
 }
