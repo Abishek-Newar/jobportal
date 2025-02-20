@@ -15,20 +15,20 @@ datasource db {
 
 
 model User{
-  id        Int  @id   @default(autoincrement())
-  name      String  
-  email     String   @unique 
-  password  String 
-  type      String 
+  id              String  @id   @default(uuid())
+  name            String  
+  email           String   @unique 
+  password        String
+  type            String 
+  userProfile     UserProfile?  
 }
 
-model userProfile{
+model UserProfile{
   id              String    @id @default(uuid())
-  phone           Int?     @unique 
-  email           String?  @unique
+  Phone           Int     @unique 
   expectedSalary  Int? 
   noticePeriod    Int? 
-  Resume          String? 
+  resume          String? 
   resumeHeadline  String? 
   skills          String[]
   project         Project[]
@@ -36,6 +36,8 @@ model userProfile{
   Links           Links[]
   Publications    Publications[]
   languages       languages[]
+  userId          String    @unique
+  user            User      @relation(fields: [userId],references: [id])
 }
 
 model Project{
@@ -45,7 +47,7 @@ model Project{
   to            DateTime
   details       String 
   userId        String
-  userProfile   userProfile    @relation(fields: [userId],references: [id])    
+  userProfile   UserProfile    @relation(fields: [userId],references: [id])    
 }
 
 model  Education{
@@ -59,7 +61,7 @@ model  Education{
   from            DateTime
   to              DateTime
   userId          String 
-  userProfile     userProfile  @relation(fields: [userId],references: [id])
+  userProfile     UserProfile  @relation(fields: [userId],references: [id])
 }
 
 model Links{
@@ -67,7 +69,7 @@ model Links{
   title         String
   link          String 
   userId        String
-  userProfile   userProfile  @relation(fields: [userId],references: [id])
+  userProfile   UserProfile  @relation(fields: [userId],references: [id])
 }
 
 model  Publications{
@@ -75,7 +77,7 @@ model  Publications{
   title         String
   description   String 
   userId        String
-  userProfile   userProfile  @relation(fields: [userId],references: [id])
+  userProfile   UserProfile  @relation(fields: [userId],references: [id])
 }
 
 model languages{
@@ -85,5 +87,5 @@ model languages{
   write         Boolean
   speak         Boolean 
   userId        String
-  userProfile   userProfile  @relation(fields: [userId],references: [id])
+  userProfile   UserProfile  @relation(fields: [userId],references: [id])
 }
