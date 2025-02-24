@@ -28,7 +28,5 @@ export const fileUpload = async(file) =>{
         }
     })
 
-    return {
-        filename: file.filename
-    }
+    return file.filename
 }

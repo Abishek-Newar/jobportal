@@ -23,11 +23,12 @@ model User{
   job             Job[]
   applied         String[]
   userProfile     UserProfile?  
+  appliedJobs     String[]
 }
 
 model UserProfile{
   id              String    @id @default(uuid())
-  Phone           Int     @unique 
+  Phone           Int?     @unique 
   expectedSalary  Int? 
   noticePeriod    Int? 
   resume          String? 
@@ -47,7 +48,8 @@ model Project{
   title         String 
   from          DateTime
   to            DateTime
-  details       String 
+  details       String
+  projectLink   String 
   userId        String
   userProfile   UserProfile    @relation(fields: [userId],references: [id])    
 }
@@ -93,16 +95,18 @@ model languages{
 }
 
 model Job{
-  id                String    @id  @default(uuid())
-  title             String 
-  pay               String 
-  jobtype           String[]
-  shift             String[]
-  location          String 
-  benefits          String[] 
-  userId            String
-  user              User    @relation(fields: [userId],references: [id])
-  jobdescription    JobDescription?
+  id                  String    @id  @default(uuid())
+  title               String 
+  pay                 String 
+  jobtype             String[]
+  shift               String[]
+  location            String 
+  benefits            String[] 
+  appliedBy           String[]
+  shorlistCandidates  String[]
+  userId              String   @unique
+  user                User    @relation(fields: [userId],references: [id])
+  jobdescription      JobDescription?
 }
 
 model JobDescription{

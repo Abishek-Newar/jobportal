@@ -33,7 +33,10 @@ export const SignupController = async(req,res)=>{
                 name: body.name,
                 email: body.email,
                 password: hashedPass,
-                type: body.type
+                type: body.type,
+                userProfile:{
+                    phone: body.phone
+                }
             }
         })
         
