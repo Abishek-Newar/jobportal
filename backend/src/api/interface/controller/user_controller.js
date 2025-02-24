@@ -103,6 +103,47 @@ export const ViewJobs = async(req,res) =>{
 }
 
 export const applyJobs = async(req,res)=>{
-
+    const data = req.params.id 
+    try {
+        let appliedJobs = await prisma.user.findFirst({
+            where:{
+                id: req.userId
+            },
+            select:{
+                applied: true
+            }
+        })
+        appliedJobs.appliedJobs.push(data)
+        await prisma.user.update({
+            where:{
+                id: req.userId
+            },
+            data:{
+                applied:appliedJobs
+            }
+        })
+        let appliedBy = await prisma.job.findFirst({
+            where:{
+                id: data
+            }
+        })
+        appliedBy.appliedBy.push(req.userId)
+        await prisma.job.update({
+            where:{
+                id: data 
+            },
+            data:{
+                appliedBy:appliedBy
+            }
+        })
+        res.json({
+            msg:"applied to job"
+        })
+    } catch (error) {
+        console.log("error while applying jobs",error)
+        res.status(500).json({
+            msg: "error while applying jobs"
+        })
+    }
 }
 

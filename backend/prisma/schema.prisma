@@ -23,7 +23,6 @@ model User{
   job             Job[]
   applied         String[]
   userProfile     UserProfile?  
-  appliedJobs     String[]
 }
 
 model UserProfile{
