@@ -1,0 +1,26 @@
+
+.gridContainer{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+.gridChild1{
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+    
+}
+.gridChild1:first-child{
+    background-color: #e2e8f0;
+}
+.gridChild2{
+width: 400px;
+}
+.heading4{
+    line-height: 2;
+}
+.para{
+    line-height: 1;
+    font-size: small;
+    color: rgb(147, 141, 141);
+}

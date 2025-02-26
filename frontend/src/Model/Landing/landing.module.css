@@ -1,0 +1,175 @@
+                 /* Hero */
+
+.container {
+    height: 100vh;
+    width: 100%;
+    background-image: url("/bg1.jpg");
+    background-size: cover;
+    padding-top: 150px;
+    padding-left: 10%;
+    font-family: 'Poppins', serif;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    width: 35%;
+    gap: 30px;
+}
+
+.parah2 {
+    font-size: 2rem;
+}
+
+.btn {
+    border: 2px solid rgb(58, 122, 100);
+    height: 40px;
+    width: 120px;
+    background-color: rgb(58, 122, 100);
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn:hover {
+    background-color: rgb(39, 84, 70);
+    border: 2px solid rgb(39, 84, 70);
+    transition: 1s;
+}
+
+
+
+
+                 /* Footer */
+
+.container2 {
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+    height: 30vh;
+}
+
+.Creator {
+    position: absolute;
+    bottom: 10px;
+    left: 45%;
+    cursor: pointer;
+}
+
+.list {
+    list-style: none;
+    cursor: pointer;
+}
+
+.list li:hover{
+    text-decoration: underline;
+}
+
+.contact:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+                 /* Review */
+.top{
+    height: 50vh;
+ }
+ .headingreview{
+    text-align: center;
+    padding: 30px;
+ }         
+ .parentreview{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    width: 80%;
+    margin: auto;
+ }    
+ .box1{
+    font-family: "Poppins",serif;
+    border: 1px solid black;
+    height: 30vh;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    padding: 15px;
+    border-radius: 10px;
+ }  
+ .para{
+    text-align: justify;
+    font-size: 13px;
+ } 
+ .h4review{
+    font-family: "Dancing Script", serif;
+    font-size: 20px;
+ }
+
+
+
+
+                /* Description */
+.topdescription{
+    height: 80vh;
+    background-color: rgb(244, 239, 239);
+    padding: 30px;
+}
+.headingdescription{
+    text-align: center;
+    padding: 30px;
+    font-size: 50px;
+    line-height: 10px;
+    font-family: "Poppins",serif;
+ }         
+ .paradescription{
+    text-align: center;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+    color:  rgb(57, 56, 56);
+    font-size: 20px;
+    font-family: "Poppins",serif;
+ }
+ .insidedescription{
+    color: rgb(58, 122, 100) ;
+ }
+ .parentdescription{
+    display: flex;
+    justify-content: space-around;
+    align-items:center;
+    width: 80%;
+    margin: auto;
+ }  
+ .boxdescription{
+    font-family: "Poppins",serif;
+    border: 1px solid rgb(218, 210, 210);
+    height: 40vh;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 5px 5px 5px grey;
+    
+ } 
+ .top2description{
+    font-size: 30px;
+ }   
+ .para2description{
+font-size: 13px;
+color: rgb(57, 56, 56);
+ }
+ .icon1{
+    font-size: 50px;
+    color:  rgb(58, 122, 100);
+ }
