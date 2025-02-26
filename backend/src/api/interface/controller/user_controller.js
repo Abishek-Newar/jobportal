@@ -1,6 +1,6 @@
-import { prisma } from "../../config/db"
-import { projectValidator } from "../../config/helpers/validators"
-import { fileUpload } from "../model/resume.model"
+import { prisma } from "../../config/db.js"
+import { projectValidator } from "../../config/helpers/validators.js"
+import { fileUpload } from "../model/resume.model.js"
 
 
 export const uploadResume = async(req,res) =>{
@@ -84,15 +84,15 @@ export const ViewJobs = async(req,res) =>{
     const data = req.params.name;
     try {
         const jobs = await prisma.job.findMany({
-            where:{
-                OR:[
+            where:
+                data?
+                {OR:[
                     {
                         title: data
                     },{
                         location: data
                     }
-                ]
-            }
+                ]}: {}
         })
 
         res.json(jobs)
@@ -101,6 +101,7 @@ export const ViewJobs = async(req,res) =>{
         res.json("error while getting jobs")
     }
 }
+
 
 export const applyJobs = async(req,res)=>{
     const data = req.params.id 

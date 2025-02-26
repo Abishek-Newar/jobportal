@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { env } from "../../infrastructure/env.js"
+import env from "../../infrastructure/env.js"
 
 
 export const genToken = async(data)=>{

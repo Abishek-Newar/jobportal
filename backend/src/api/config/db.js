@@ -1,6 +1,6 @@
 import {PrismaClient} from "@prisma/client"
 import AWS from "aws-sdk"
-import { env } from "../../infrastructure/env.js"
+import env from "../../infrastructure/env.js" 
 
 
 export const prisma = new PrismaClient()
