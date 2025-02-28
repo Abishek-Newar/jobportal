@@ -6,11 +6,11 @@ import JobAdd from '../../Model/Employer/JobAdd'
 const EmployerDashboard = () => {
     const [page,setPage] = React.useState("job")
   return (
-    <div className='min-h-screen'>
-        <div className='w-[25%]'>
+    <div className='min-h-screen flex'>
+        <div className='w-[25%] min-h-screen'>
             <Sidebar setPage={setPage} />
         </div>
-        <div className='w-[75%]'>
+        <div className='w-[75%] min-h-screen'>
             {
                 page === "job"?
                 <ViewJobs />

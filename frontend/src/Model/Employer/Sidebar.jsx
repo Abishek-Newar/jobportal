@@ -13,9 +13,9 @@ const Sidebar = ({setPage}) => {
         <h1>SkillMatch</h1>
         <div>
             {
-                obj.map((item,index)=>{
+                obj.map((item,index)=>(
                     <div key={index} onClick={item.link}>{item.name}</div>
-                })
+                ))
             }
         </div>
     </div>

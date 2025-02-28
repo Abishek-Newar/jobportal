@@ -4,6 +4,7 @@ import './App.css'
 import Landing from "./Pages/Landing/Landing"
 import Profile from "./Pages/Profile/Profile"
 import Jobs from "./Pages/Jobs/Jobs"
+import EmployerDashboard from "./Pages/Employer/EmployerDashboard"
 
 function App() {
   
@@ -16,6 +17,7 @@ function App() {
      <Route path="/" element = {<Landing/>}/>
      <Route path="/profile" element = {<Profile/>}/>
      <Route path="/jobs" element={<Jobs />} />
+     <Route path="/employer/dashboard" element={<EmployerDashboard />} />
      </Routes>
      </BrowserRouter> 
     </>
