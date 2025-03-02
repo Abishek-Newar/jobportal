@@ -23,10 +23,10 @@ const EmployerSignin = ({authType}) => {
             const response = await axios.post(`${BACKEND_URL}/auth/signin`,formData)
             toast.success("Signin Successful")
             localStorage.setItem("token",response.data.token)
-            localStorage.setItem("username",response.data.ownername)
-            localStorage.setItem("type","owner")
+            localStorage.setItem("username",response.data.name)
+            localStorage.setItem("type",response.data.type)
             setTimeout(()=>{
-                navigate("/seller/dashboard")
+                navigate("/employer/dashboard")
             },2000)
         } catch (error) {
             toast.error("invalid credentials")
@@ -41,8 +41,8 @@ const EmployerSignin = ({authType}) => {
         <Input type="email" placeholder="john@gmail.com" name="Email" id="email" onChange={(e)=>handleChange("email",e)}  />
         <Input type="password" placeholder="" name="Password" id="password" onChange={(e)=>handleChange("password",e)}  />
         </div>
-        <button className='w-full bg-secondaryC h-10 font-bold text-white rounded-lg ' onClick={handleSubmit}>LOGIN</button>
-        <p className='text-secondaryText'>Don't have a account? <a className='underline cursor-pointer hover:text-black' onClick={()=>{authType("signup")}}>Signup</a></p>
+        <button className='w-full bg-orange-400 h-10 font-bold text-white rounded-lg ' onClick={handleSubmit}>LOGIN</button>
+        <p className='text-stone-500'>Don't have a account? <a className='underline cursor-pointer hover:text-black' onClick={()=>{authType("signup")}}>Signup</a></p>
     </div>
   )
 }

@@ -26,13 +26,13 @@ const EmployerSignup = ({authType}) => {
             phone: parseInt(formData.phone)
         }
         try {
-            const response = await axios.post(`${BACKEND_URL}/owner/signup`,data)
+            const response = await axios.post(`${BACKEND_URL}/auth/signup`,data)
             toast.success("Signup Successful")
             localStorage.setItem("token",response.data.token)
-        localStorage.setItem("username",response.data.username)
-        localStorage.setItem("type","owner")
+        localStorage.setItem("username",response.data.name)
+        localStorage.setItem("type",response.data.type)
             setTimeout(()=>{
-                navigate("/seller/dashboard")
+                navigate("/employer/dashboard")
             },2000)
         } catch (error) {
             toast.error("invalid credentials")
@@ -46,11 +46,9 @@ const EmployerSignup = ({authType}) => {
         <div className='flex flex-col gap-2'>
         <Input type="text" placeholder="John Doe" name="Name" id="name" onChange={(e)=>handleChange("name",e)}  />
         <Input type="email" placeholder="john@gmail.com" name="Email" id="email" onChange={(e)=>handleChange("email",e)}  />
-        <Input type="number" placeholder="9876543210" name="Phone" id="phone" onChange={(e)=>handleChange("phone",e)}  />
-        <Input type="text" placeholder="CIX897654" name="Id Proof" id="idproof" onChange={(e)=>handleChange("idProof",e)}  />
         <Input type="password" placeholder="" name="Password" id="password" onChange={(e)=>handleChange("password",e)}  />
         </div>
-        <button className=' bg-secondaryC h-10 rounded-lg text-white text-bold' onClick={handleSubmit}>Sign Up</button>
+        <button className=' bg-orange-400 h-10 rounded-lg text-white text-bold' onClick={handleSubmit}>Sign Up</button>
         <p className='text-secondaryText'>Don't have a account? <a className='underline hover:text-black cursor-pointer' onClick={()=>{authType("signin")}}>Signin</a></p>
         <Toaster />
     </div>

@@ -97,7 +97,7 @@ export default JobAdd
 
 export const Input = ({id,name,placeholder,onChange,type})=>{
     return(
-        <label htmlFor={id} className='px-32'>
+        <label htmlFor={id} className=''>
             <p>{name}: </p>
             <input className=" px-3 py-1 h-10 border rounded-md w-[100%] focus:shadow-lg" type={type} id={id} placeholder={placeholder} onChange={onChange}  />
         </label>
