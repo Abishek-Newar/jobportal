@@ -3,7 +3,7 @@ import { useState } from "react"
 import axios from "axios" 
 import {toast,Toaster} from "sonner"
 import { useNavigate } from "react-router-dom"
-
+import { BACKEND_URL } from "../../../../lib"
 function SignIn({setType}){
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
@@ -23,11 +23,15 @@ function SignIn({setType}){
     async function handleSubmit(e){
         e.preventDefault()
         try{
-            const response = await axios.post("http://localhost:3000/v1/auth/signin",{
+            const response = await axios.post(`${BACKEND_URL}/auth/signin`,{
                 email: email,
                 password: password,
                 type: "user"
             })
+            console.log(response)
+            localStorage.setItem("token",response.data.token)
+            localStorage.setItem("name",response.data.name)
+            localStorage.setItem("type",response.data.type)
             toast.success("Login succesful") 
             setTimeout(()=>{
                  navigate("/")
@@ -45,7 +49,7 @@ function SignIn({setType}){
     <input className={styles.inputs} type="text" placeholder="aiman@gmail.com" onChange={(e)=>setEmail(e.target.value)} />
 
     <label className={styles.labels}>Password</label>
-    <input className={styles.inputs} type="password"  onChange={(e)=>{setPassword(e.target.value);console.log(e)}} />
+    <input className={styles.inputs} type="password"  onChange={(e)=>{setPassword(e.target.value) }} />
     <button className={styles.btn} type="submit">Login</button>
     <p>Don't have an account? <span className={styles.p} onClick={()=>setType("signup")}>Sign Up</span></p>
     <Toaster/>

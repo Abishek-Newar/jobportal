@@ -7,6 +7,7 @@ import { genToken } from "../../lib/jwt.config.js"
 export const SignupController = async(req,res)=>{
     const body = req.body
     const salt = bcrypt.genSalt(10)
+    console.log(body)
     try {
         const success = SignupValidator.safeParse(body)
         if(!success.success){
@@ -27,7 +28,8 @@ export const SignupController = async(req,res)=>{
             })
         }
 
-        const hashedPass = bcrypt.hash(body.password,salt)
+        const hashedPass = await bcrypt.hash(body.password,10)
+        console.log(hashedPass);
         const users = await prisma.user.create({
             data:{
                 name: body.name,

@@ -9,7 +9,11 @@ import {useNavigate} from "react-router-dom"
         <div>
           <h3 className={styles.logo}>SKILLMATCH</h3>
         </div>
-        <button onClick={()=>{navigate("/auth")}} className={styles.btn}>Login</button>
+        {
+          localStorage.getItem("token") && localStorage.getItem("type") === "user"?
+          <button onClick={()=>{localStorage.clear()}} className={styles.btn}>Logout</button>:
+          <button onClick={()=>{navigate("/auth");window.location.reload()}} className={styles.btn}>Login</button>
+        }
       </nav>
     </div>
   )

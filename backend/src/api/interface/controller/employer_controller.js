@@ -7,7 +7,6 @@ export const postJobs = async(req,res)=>{
         await prisma.job.create({
             data:{
                 title: body.title,
-                description: body.description,
                 pay: body.pay,
                 jobtype: body.jobtype,
                 shift: body.shift,
