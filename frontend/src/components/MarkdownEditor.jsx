@@ -5,7 +5,7 @@ import 'easymde/dist/easymde.min.css';
 const MarkdownEditor = ({ value, onChange, placeholder, maxHeights }) => {
     const editorRef = useRef(null);
     const textareaRef = useRef(null);
-
+    console.log(onChange)
     useEffect(() => {
         if (!editorRef.current && textareaRef.current) {
 

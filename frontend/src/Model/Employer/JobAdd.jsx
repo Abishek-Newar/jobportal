@@ -25,11 +25,20 @@ const JobAdd = () => {
             [type]: e.target.value
         })
     }
+
+    function handleMarkDownChange(type,value){
+        console.log(value)
+        setData({
+            ...data,
+            [type]: value
+        })
+    }
     const handleCheckbox = (event) => {
         const { value, checked } = event.target;
-        setData.jobtype((prev) =>
-            checked ? [...prev, value] : prev.filter((val) => val !== value)
-        );
+        setData(prevData => ({
+            ...prevData,
+            jobtype: checked ? [...prevData.jobtype, value] : prevData.jobtype.filter((val) => val !== value)
+        }));
     };
 
     async function handleSubmit(e){
@@ -37,9 +46,10 @@ const JobAdd = () => {
         try {
             const response = await axios.post(`${BACKEND_URL}/employee/postjobs`,data,{
                 headers:{
-                    authorization: localStorage.getItem("token")
+                    authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             })
+            alert("job added")
         } catch (error) {
             console.log("error while posting job",error)
             toast("unable to post now please try later")
@@ -47,29 +57,29 @@ const JobAdd = () => {
     }
 
   return (
-    <div>
-         <h1>Add Job</h1>
-         <form className='px-32' onSubmit={handleSubmit}>
+    <div className='p-10 '>
+         <h1 className='text-center text-2xl uppercase underline font-bold'>Add Job</h1>
+         <form className='px-32 flex flex-col gap-5' onSubmit={handleSubmit}>
             <Input id="title" type="text" name="Title" placeholder="Software Engineer" onChange={(e)=>{handleChange("title",e)}} />
-            <LabelledMarkdownEditor value={data.description} id="description" name="Description" maxHeigth="200px" placeholder="...." onChange={(e)=>{handleChange("description",e)}} />
-            <Input id="pay" type="number" name="Pay" placeholder="Software Engineer" onChange={(e)=>{handleChange("title",e)}} />
+            <LabelledMarkdownEditor value={data.description} id="description" name="Description" maxHeigth="200px" placeholder="...." onChange={(value)=>{handleMarkDownChange("description",value)}} />
+            <Input id="pay" type="number" name="Pay" placeholder="Software Engineer" onChange={(e)=>{handleChange("pay",e)}} />
             <label htmlFor="">
                 <p>Job Type</p>
                 <div>
                     <div>
-                    <input type="checkbox" value="OnSite" name="onsite" id="onsite" onChange={handleCheckbox} /> <span>OnSite</span>
+                    <input type="checkbox" value="OnSite" name="onsite" id="onsite" onChange={handleCheckbox} /> <label htmlFor="onsite">OnSite</label>
                     </div>
                     <div>
-                    <input type="checkbox" value="Hybrid" name="hybrid" id="hybrid" onChange={handleCheckbox} /> <span>Hybrid</span>
+                    <input type="checkbox" value="Hybrid" name="hybrid" id="hybrid" onChange={handleCheckbox} /> <label htmlFor="hybrid">Hybrid</label>
                     </div>
                     <div>
-                    <input type="checkbox" value="Remote" name="remote" id="remote" onChange={handleCheckbox} /> <span>Remote</span>
+                    <input type="checkbox" value="Remote" name="remote" id="remote" onChange={handleCheckbox} /> <label htmlFor="remote">Remote</label>
                     </div>
                     <div>
-                    <input type="checkbox" value="Full-Time" name="full" id="full" onChange={handleCheckbox} /> <span>Full-Time</span>
+                    <input type="checkbox" value="Full-Time" name="full" id="full" onChange={handleCheckbox} /> <label htmlFor="full">Full-Time</label>
                     </div>
                     <div>
-                    <input type="checkbox" value="Part-Time" name="part" id="remote" onChange={handleCheckbox} /> <span>Part-Time</span>
+                    <input type="checkbox" value="Part-Time" name="part" id="remote" onChange={handleCheckbox} /> <label htmlFor="part">Part-Time</label>
                     </div>
                 </div>
             </label>
@@ -81,13 +91,13 @@ const JobAdd = () => {
                 <option value="Rotational">Rotational</option>
             </select>
             
-            <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleChange("benefits",e)}} />
-            <LabelledMarkdownEditor id="responsi" value={data.responsibilities} maxHeigth="200px" name="Responsibilities" placeholder="..." onChange={(e)=>{handleChange("responsiblities",e)}} />
-            <LabelledMarkdownEditor id="require" value={data.requirements} maxHeigth="200px" name="Requirements" placeholder="..." onChange={(e)=>{handleChange("Requirements",e)}} />
-            <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleChange("benefits",e)}} />
+            <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleMarkDownChange("benefits",e)}} />
+            <LabelledMarkdownEditor id="responsi" value={data.responsibilities} maxHeigth="200px" name="Responsibilities" placeholder="..." onChange={(e)=>{handleMarkDownChange("responsiblities",e)}} />
+            <LabelledMarkdownEditor id="require" value={data.requirements} maxHeigth="200px" name="Requirements" placeholder="..." onChange={(e)=>{handleMarkDownChange("Requirements",e)}} />
+            {/* <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleMarkDownChange("benefits",e)}} /> */}
             <Input id="work" name="Work Location" type="text" placeholder="Mohali" onChange={(e)=>{handleChange("worklocation",e)}} />
             <Input id="deadline" name="Deadline" type="date" placeholder="" onChange={(e)=>{handleChange("deadline",e)}} />
-            <button type="submit">Post</button>
+            <button className='w-full h-12 bg-orange-400 hover:bg-orange-600 transition-all ease-linear duration-500 rounded-md text-white text-xl font-bold' type="submit">Post</button>
          </form>
     </div>
   )
