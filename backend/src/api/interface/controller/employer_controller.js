@@ -3,6 +3,7 @@ import { prisma } from "../../config/db.js";
 
 export const postJobs = async(req,res)=>{
     const body = req.body;
+    console.log(body)
     try {
         await prisma.job.create({
             data:{
@@ -30,8 +31,8 @@ export const postJobs = async(req,res)=>{
         })
     } catch (error) {
         console.log("error while posting jobs",error)
-        res.json({
-            msg: "error while updating jobs"
+        res.status(500).json({
+            msg: "error while posting jobs"
         })
     }
 }
