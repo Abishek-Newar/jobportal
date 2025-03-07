@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './landing.module.css'
+import { Link } from 'react-router-dom'
 function Footer() {
   return (
     <div className= {styles.container2}>
@@ -12,7 +13,7 @@ function Footer() {
         <ul className={styles.list}>
           <li>Signin Options</li>
           <li>User</li>
-          <li>Employer</li>
+          <li><Link to="/employer/auth">Employer</Link></li>
         </ul>
 
         <div>
