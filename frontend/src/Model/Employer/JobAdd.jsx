@@ -25,14 +25,6 @@ const JobAdd = () => {
             [type]: e.target.value
         })
     }
-
-    function handleMarkDownChange(type,value){
-        console.log(value)
-        setData({
-            ...data,
-            [type]: value
-        })
-    }
     const handleCheckbox = (event) => {
         const { value, checked } = event.target;
         setData(prevData => ({
@@ -42,18 +34,19 @@ const JobAdd = () => {
     };
 
     async function handleSubmit(e){
+        console.log(data)
         e.preventDefault()
-        try {
-            const response = await axios.post(`${BACKEND_URL}/employee/postjobs`,data,{
-                headers:{
-                    authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            })
-            alert("job added")
-        } catch (error) {
-            console.log("error while posting job",error)
-            toast("unable to post now please try later")
-        }
+        // try {
+        //     const response = await axios.post(`${BACKEND_URL}/employee/postjobs`,data,{
+        //         headers:{
+        //             authorization: `Bearer ${localStorage.getItem("token")}`
+        //         }
+        //     })
+        //     alert("job added")
+        // } catch (error) {
+        //     console.log("error while posting job",error)
+        //     toast("unable to post now please try later")
+        // }
     }
 
   return (
@@ -61,7 +54,7 @@ const JobAdd = () => {
          <h1 className='text-center text-2xl uppercase underline font-bold'>Add Job</h1>
          <form className='px-32 flex flex-col gap-5' onSubmit={handleSubmit}>
             <Input id="title" type="text" name="Title" placeholder="Software Engineer" onChange={(e)=>{handleChange("title",e)}} />
-            <LabelledMarkdownEditor value={data.description} id="description" name="Description" maxHeigth="200px" placeholder="...." onChange={(value)=>{handleMarkDownChange("description",value)}} />
+            <LabelledMarkdownEditor value={data.description} id="description" name="Description" maxHeigth="200px" placeholder="...." onChange={(value)=>{setData({...data,description: value})}} />
             <Input id="pay" type="number" name="Pay" placeholder="Software Engineer" onChange={(e)=>{handleChange("pay",e)}} />
             <label htmlFor="">
                 <p>Job Type</p>
@@ -91,9 +84,9 @@ const JobAdd = () => {
                 <option value="Rotational">Rotational</option>
             </select>
             
-            <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleMarkDownChange("benefits",e)}} />
-            <LabelledMarkdownEditor id="responsi" value={data.responsibilities} maxHeigth="200px" name="Responsibilities" placeholder="..." onChange={(e)=>{handleMarkDownChange("responsiblities",e)}} />
-            <LabelledMarkdownEditor id="require" value={data.requirements} maxHeigth="200px" name="Requirements" placeholder="..." onChange={(e)=>{handleMarkDownChange("Requirements",e)}} />
+            <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(value)=>{setData({...data,benefits: value})}} />
+            <LabelledMarkdownEditor id="responsi" value={data.responsibilities} maxHeigth="200px" name="Responsibilities" placeholder="..." onChange={(value)=>{setData({...data,responsibilities: value})}} />
+            <LabelledMarkdownEditor id="require" value={data.requirements} maxHeigth="200px" name="Requirements" placeholder="..." onChange={(value)=>{setData({...data,requirements: value})}} />
             {/* <LabelledMarkdownEditor id="benefits" value={data.benefits} maxHeigth="200px" name="Benefits" placeholder="..." onChange={(e)=>{handleMarkDownChange("benefits",e)}} /> */}
             <Input id="work" name="Work Location" type="text" placeholder="Mohali" onChange={(e)=>{handleChange("worklocation",e)}} />
             <Input id="deadline" name="Deadline" type="date" placeholder="" onChange={(e)=>{handleChange("deadline",e)}} />
