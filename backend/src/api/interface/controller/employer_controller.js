@@ -21,7 +21,7 @@ export const postJobs = async(req,res)=>{
                         requirements: body.requirements,
                         experience: body.experience,
                         worklocation: body.worklocation,
-                        deadline :body.deadline,
+                        deadline : new Date(body.deadline),
                     }
                 }
             }

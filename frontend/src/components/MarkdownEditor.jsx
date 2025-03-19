@@ -5,9 +5,9 @@ import 'easymde/dist/easymde.min.css';
 const MarkdownEditor = ({ value, onChange, placeholder, maxHeights }) => {
     const editorRef = useRef(null);
     const textareaRef = useRef(null);
-    useEffect(() => {
-        if (!editorRef.current && textareaRef.current) {
 
+    useEffect(() => {
+        if (textareaRef.current && !editorRef.current) {
             editorRef.current = new EasyMDE({
                 element: textareaRef.current,
                 initialValue: value,
@@ -16,8 +16,8 @@ const MarkdownEditor = ({ value, onChange, placeholder, maxHeights }) => {
                 maxHeight: maxHeights,
             });
 
+            // Event Listener for Changes
             editorRef.current.codemirror.on('change', () => {
-
                 const newValue = editorRef.current.value();
                 if (newValue !== value) {
                     onChange(newValue);
@@ -27,8 +27,8 @@ const MarkdownEditor = ({ value, onChange, placeholder, maxHeights }) => {
 
         return () => {
             if (editorRef.current) {
-                editorRef.current.toTextArea();
-                editorRef.current = null;
+                editorRef.current.toTextArea(); // Remove the editor instance
+                editorRef.current = null; // Reset reference
             }
         };
     }, []);
@@ -40,12 +40,11 @@ const MarkdownEditor = ({ value, onChange, placeholder, maxHeights }) => {
     }, [value]);
 
     return (
-            <textarea
-                ref={textareaRef}
-                id="markdown-editor"
-                placeholder={placeholder}
-                style={{ width: '100%', height: '100%', boxSizing: 'border-box', overflowY: 'auto' }}
-            ></textarea>
+        <textarea
+            ref={textareaRef}
+            placeholder={placeholder}
+            style={{ width: '100%', height: '100%', boxSizing: 'border-box', overflowY: 'auto' }}
+        ></textarea>
     );
 };
 

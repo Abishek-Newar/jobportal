@@ -98,9 +98,9 @@ model Job{
   title               String 
   pay                 String 
   jobtype             String[]
-  shift               String[]
+  shift               String
   location            String 
-  benefits            String[] 
+  benefits            String 
   appliedBy           String[]
   shorlistCandidates  String[]
   userId              String   @unique

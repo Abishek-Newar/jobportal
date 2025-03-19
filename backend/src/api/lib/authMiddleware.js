@@ -11,6 +11,7 @@ export default function authMiddleware(req,res,next){
                 msg: "invalid token"
             })
         }
+        req.userId = user.id
         next()
     } catch (error) {
         console.log("error in middleware",error)
