@@ -129,3 +129,27 @@ export const getShorlistedCandidates = async(req,res)=>{
         })
     }
 }
+
+export const getAllJobs = async(req, res) => {
+    try {
+        const jobs = await prisma.job.findMany({
+            where: {
+                userId: req.userId
+            },
+            include: {
+                jobdescription: true
+            }
+        });
+        
+        res.json({
+            success: true,
+            data: jobs
+        });
+    } catch (error) {
+        console.log("error while fetching jobs", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error while fetching jobs"
+        });
+    }
+}

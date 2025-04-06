@@ -3,7 +3,7 @@ import Auth from "./Pages/Auth/Auth"
 import './App.css'
 import Landing from "./Pages/Landing/Landing"
 import Profile from "./Pages/Profile/Profile"
-import Jobs from "./Pages/Jobs/Jobs"
+import Jobs from "./Pages/users/Jobs"
 import EmployerDashboard from "./Pages/Employer/EmployerDashboard"
 import EmployerAuth from "./Pages/Employer/EmployerAuth"
 

@@ -102,6 +102,26 @@ export const ViewJobs = async(req,res) =>{
     }
 }
 
+export const viewAllJobs = async(req, res) => {
+    try {
+        const jobs = await prisma.job.findMany({
+            include: {
+                jobdescription: true
+            }
+        });
+        
+        res.json({
+            success: true,
+            data: jobs
+        });
+    } catch (error) {
+        console.log("error while fetching all jobs", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error while fetching all jobs"
+        });
+    }
+}
 
 export const applyJobs = async(req,res)=>{
     const data = req.params.id 
