@@ -27,17 +27,18 @@ model User{
 
 model UserProfile{
   id              String    @id @default(uuid())
-  Phone           Int?     @unique 
-  expectedSalary  Int? 
-  noticePeriod    Int? 
+  Phone           String?   // Changed from Int? to String? to handle phone numbers better
+  expectedSalary  Float?    // Changed from Int? to Float? for more flexibility
+  noticePeriod    Int?      // Kept as Int? since notice periods are typically whole numbers
   resume          String? 
-  resumeHeadline  String? 
-  skills          String[]
+  resumeHeadline  String?   @db.Text // Added @db.Text for longer text
+  skills          String[]  @default([])
   project         Project[]
   Education       Education[]
   Links           Links[]
   Publications    Publications[]
   languages       languages[]
+  experiences     Experience[]
   userId          String    @unique
   user            User      @relation(fields: [userId],references: [id])
 }
@@ -45,10 +46,10 @@ model UserProfile{
 model Project{
   id            String   @id @default(uuid())
   title         String 
-  from          DateTime
-  to            DateTime
-  details       String
-  projectLink   String 
+  from          DateTime @default(now())
+  to            DateTime @default(now())
+  details       String   @db.Text
+  projectLink   String   @default("")
   userId        String
   userProfile   UserProfile    @relation(fields: [userId],references: [id])    
 }
@@ -59,10 +60,10 @@ model  Education{
   specialization  String 
   institute       String 
   course          String 
-  courseType      String 
+  courseType      String   @default("Full-time")
   grade           Float?
-  from            DateTime
-  to              DateTime
+  from            DateTime @default(now())
+  to              DateTime @default(now())
   userId          String 
   userProfile     UserProfile  @relation(fields: [userId],references: [id])
 }
@@ -78,7 +79,7 @@ model Links{
 model  Publications{
   id            String   @id  @default(uuid())
   title         String
-  description   String 
+  description   String   @db.Text
   userId        String
   userProfile   UserProfile  @relation(fields: [userId],references: [id])
 }
@@ -86,9 +87,9 @@ model  Publications{
 model languages{
   id            String  @id  @default(uuid())
   title         String 
-  read          Boolean
-  write         Boolean
-  speak         Boolean 
+  read          Boolean @default(false)
+  write         Boolean @default(false)
+  speak         Boolean @default(false)
   userId        String
   userProfile   UserProfile  @relation(fields: [userId],references: [id])
 }
@@ -101,21 +102,34 @@ model Job{
   shift               String
   location            String 
   benefits            String 
-  appliedBy           String[]
-  shorlistCandidates  String[]
-  userId              String   @unique
-  user                User    @relation(fields: [userId],references: [id])
+  appliedBy           String[]  @default([])
+  shorlistCandidates  String[]  @default([])
+  userId              String    @unique
+  user                User      @relation(fields: [userId],references: [id])
   jobdescription      JobDescription?
 }
 
 model JobDescription{
   id                  String   @id   @default(uuid())
-  description         String 
-  responsibilities    String 
-  requirements        String 
+  description         String   @db.Text
+  responsibilities    String   @db.Text
+  requirements        String   @db.Text
   experience          String 
   worklocation        String 
   deadline            DateTime
   jobId               String   @unique
-  job                 Job       @relation(fields: [jobId],references: [id])
+  job                 Job      @relation(fields: [jobId],references: [id])
+}
+
+model Experience {
+  id            String   @id @default(uuid())
+  title         String
+  company       String
+  location      String   @default("")
+  description   String?  @db.Text
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  current       Boolean  @default(false)
+  userId        String
+  userProfile   UserProfile @relation(fields: [userId], references: [id])
 }

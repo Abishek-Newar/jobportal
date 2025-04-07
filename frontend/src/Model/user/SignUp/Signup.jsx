@@ -37,7 +37,7 @@ function Signup({ setType }) {
       localStorage.setItem("type", response.data.type)
       toast.success("SignUp succesfull")
       setTimeout(() => {
-        navigate("/")
+        navigate("/signup/personal-details")
       }, 2000)
     } catch (error) {
       toast.error("error")

@@ -28,9 +28,109 @@ export const uploadResume = async(req,res) =>{
     }
 }
 
-export const updateProfile = (req,res) =>{
-    
-}
+export const updateProfile = async (req, res) => {
+    const body = req.body;
+    console.log(body)
+    try {
+        // Check if user profile exists
+        let userProfile = await prisma.userProfile.findUnique({
+            where: {
+                userId: req.userId
+            }
+        });
+
+        // If profile doesn't exist, create it
+        if (!userProfile) {
+            userProfile = await prisma.userProfile.create({
+                data: {
+                    userId: req.userId,
+                    resumeHeadline: body.profileSummary?.summary || '',
+                    skills: body.profileSummary?.skills || [],
+                    Phone: body.phone ? parseInt(body.phone) : null,
+                    expectedSalary: body.expectedSalary ? parseInt(body.expectedSalary) : null,
+                    noticePeriod: body.noticePeriod ? parseInt(body.noticePeriod) : null
+                }
+            });
+        } else {
+            // Update existing profile
+            userProfile = await prisma.userProfile.update({
+                where: {
+                    userId: userProfile.id
+                },
+                data: {
+                    resumeHeadline: body.profileSummary?.summary || userProfile.resumeHeadline,
+                    skills: body.profileSummary?.skills || userProfile.skills,
+                    Phone: body.phone ? parseInt(body.phone) : userProfile.Phone,
+                    expectedSalary: body.expectedSalary ? parseInt(body.expectedSalary) : userProfile.expectedSalary,
+                    noticePeriod: body.noticePeriod ? parseInt(body.noticePeriod) : userProfile.noticePeriod
+                }
+            });
+        }
+
+        // Handle education data if provided
+        if (body.education && body.education.length > 0) {
+            for (const edu of body.education) {
+                await prisma.education.create({
+                    data: {
+                        education: edu.degree || '',
+                        specialization: edu.field || '',
+                        institute: edu.institution || '',
+                        course: edu.degree || '',
+                        courseType: 'Full-time', // Default value
+                        from: new Date(edu.startYear, 0, 1),
+                        to: edu.current ? new Date() : new Date(edu.endYear, 0, 1),
+                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                    }
+                });
+            }
+        }
+
+        // Handle projects data if provided
+        if (body.projects && body.projects.length > 0) {
+            for (const proj of body.projects) {
+                await prisma.project.create({
+                    data: {
+                        title: proj.title,
+                        details: proj.description || '',
+                        projectLink: proj.link || '',
+                        from: new Date(),
+                        to: new Date(),
+                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                    }
+                });
+            }
+        }
+
+        // Handle experiences data if provided
+        if (body.experiences && body.experiences.length > 0) {
+            for (const exp of body.experiences) {
+                await prisma.experience.create({
+                    data: {
+                        title: exp.title,
+                        company: exp.company,
+                        location: exp.location || '',
+                        description: exp.description || '',
+                        startDate: new Date(exp.startDate),
+                        endDate: exp.current ? null : new Date(exp.endDate),
+                        current: exp.current || false,
+                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                    }
+                });
+            }
+        }
+
+        res.status(200).json({
+            success: true,
+            msg: "Profile updated successfully"
+        });
+    } catch (error) {
+        console.log("Error updating profile:", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error updating profile"
+        });
+    }
+};
 
 export const updateProject = (req,res) =>{
     

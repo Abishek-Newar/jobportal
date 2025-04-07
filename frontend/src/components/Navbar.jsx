@@ -11,8 +11,8 @@ import {useNavigate} from "react-router-dom"
         </div>
         {
           localStorage.getItem("token") && localStorage.getItem("type") === "user"?
-          <button onClick={()=>{localStorage.clear()}} className={styles.btn}>Logout</button>:
-          <button onClick={()=>{navigate("/auth");window.location.reload()}} className={styles.btn}>Login</button>
+          <button onClick={()=>{localStorage.clear();window.location.reload()}} className={styles.btn}>Logout</button>:
+          <button onClick={()=>{navigate("/auth")}} className={styles.btn}>Login</button>
         }
       </nav>
     </div>
