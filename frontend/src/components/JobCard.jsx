@@ -1,10 +1,38 @@
 import React from 'react';
 import { CalendarDays, MapPin, Clock, Building2, Briefcase, CircleDollarSign, Shield, ClipboardList, GraduationCap, BookOpen, MapPinned } from 'lucide-react';
+import axios from 'axios';
+import { BACKEND_URL } from '../../lib';
+import { toast } from 'sonner';
 
-
-
-const JobCard = ({item,buttonName}) => {
+const JobCard = ({item, buttonName, onApplySuccess}) => {
     console.log(item)
+    
+    const handleApply = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error("Please login to apply for jobs");
+          return;
+        }
+        
+        const response = await axios.post(
+          `${BACKEND_URL}/user/apply/${item.id}`, 
+          {}, 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        
+        toast.success("Successfully applied for the job!");
+        if (onApplySuccess) onApplySuccess(item.id);
+      } catch (error) {
+        console.error("Error applying for job:", error);
+        toast.error(error.response?.data?.msg || "Failed to apply for job");
+      }
+    };
+    
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full">
       <div className="border-b pb-4 mb-4">
@@ -85,7 +113,12 @@ const JobCard = ({item,buttonName}) => {
 
         <div className="pt-4 border-t">
           <div className="flex items-center gap-2">
-            <button className='w-30 h-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-md'>{buttonName}</button>
+            <button 
+              onClick={handleApply}
+              className='w-30 h-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-md'
+            >
+              {buttonName}
+            </button>
           </div>
         </div>
       </div>

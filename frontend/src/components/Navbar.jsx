@@ -11,7 +11,11 @@ import {useNavigate} from "react-router-dom"
         </div>
         {
           localStorage.getItem("token") && localStorage.getItem("type") === "user"?
-          <button onClick={()=>{localStorage.clear();window.location.reload()}} className={styles.btn}>Logout</button>:
+         <div className='flex gap-4'> 
+          <button onClick={()=>{navigate("/my-applications")}} className="text-white">My Applications</button>
+          <button onClick={()=>{navigate("/user-profile")}} className="text-white ">My Profile</button>
+          <button onClick={()=>{localStorage.clear();window.location.reload()}} className={styles.btn}>Logout</button>
+          </div>:
           <button onClick={()=>{navigate("/auth")}} className={styles.btn}>Login</button>
         }
       </nav>
