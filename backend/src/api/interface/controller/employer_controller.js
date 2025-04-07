@@ -37,33 +37,98 @@ export const postJobs = async(req,res)=>{
     }
 }
 
-export const viewApplications = async(req,res) =>{
-    const data = req.params.id;
+export const viewApplications = async(req,res) => {
     try {
-        const applicationIds = await prisma.job.findFirst({
-            where:{
-                id: data
+        // First, get all jobs posted by this employer
+        const jobs = await prisma.job.findMany({
+            where: {
+                userId: req.userId
             },
-            select:{
+            select: {
+                id: true,
+                title: true,
+                location: true,
                 appliedBy: true
             }
-        })
-        let applications = []
-        applicationIds.appliedBy.forEach(async(element) => {
-            const user =await prisma.user.findMany({
-                where: {
-                    id: element
-                }
-            })
-            applications.push(user)
         });
-
-        res.json(applications)
+        
+        if (!jobs || jobs.length === 0) {
+            return res.json({
+                success: true,
+                data: []
+            });
+        }
+        
+        // Collect all applicant IDs across all jobs
+        const allApplicantIds = [];
+        const jobApplicationMap = {};
+        
+        jobs.forEach(job => {
+            if (job.appliedBy && job.appliedBy.length > 0) {
+                allApplicantIds.push(...job.appliedBy);
+                
+                // Create a mapping of which users applied to which jobs
+                job.appliedBy.forEach(userId => {
+                    if (!jobApplicationMap[userId]) {
+                        jobApplicationMap[userId] = [];
+                    }
+                    jobApplicationMap[userId].push({
+                        jobId: job.id,
+                        title: job.title,
+                        location: job.location
+                    });
+                });
+            }
+        });
+        
+        // Remove duplicates from applicant IDs
+        const uniqueApplicantIds = [...new Set(allApplicantIds)];
+        
+        if (uniqueApplicantIds.length === 0) {
+            return res.json({
+                success: true,
+                data: []
+            });
+        }
+        
+        // Fetch user profiles for all applicants
+        const applicants = await prisma.user.findMany({
+            where: {
+                id: {
+                    in: uniqueApplicantIds
+                }
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                userProfile: {
+                    select: {
+                        resumeHeadline: true,
+                        skills: true,
+                        Phone: true,
+                        resume: true
+                    }
+                }
+            }
+        });
+        
+        // Add the job information to each applicant
+        const applicantsWithJobInfo = applicants.map(applicant => ({
+            ...applicant,
+            appliedJobs: jobApplicationMap[applicant.id] || []
+        }));
+        
+        res.json({
+            success: true,
+            data: applicantsWithJobInfo
+        });
     } catch (error) {
-        console.log("error while getting applications",error)
+        console.log("Error fetching applications:", error);
         res.status(500).json({
-            msg: "message while getting applications"
-        })
+            success: false,
+            msg: "Error fetching applications"
+        });
     }
 }
 

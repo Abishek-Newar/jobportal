@@ -3,16 +3,16 @@ import { projectValidator } from "../../config/helpers/validators.js"
 import { fileUpload } from "../model/resume.model.js"
 
 
-export const uploadResume = async(req,res) =>{
-    const file = req.file 
+export const uploadResume = async (req, res) => {
+    const file = req.file
     try {
         const filename = await fileUpload(file)
         await prisma.user.update({
-            where:{
-                id: req.userId 
+            where: {
+                id: req.userId
             },
-            data:{
-                userProfile:{
+            data: {
+                userProfile: {
                     resume: filename
                 }
             }
@@ -30,7 +30,7 @@ export const uploadResume = async(req,res) =>{
 
 export const updateProfile = async (req, res) => {
     const body = req.body;
-    console.log(body)
+    console.log(req.userId)
     try {
         // Check if user profile exists
         let userProfile = await prisma.userProfile.findUnique({
@@ -46,26 +46,38 @@ export const updateProfile = async (req, res) => {
                     userId: req.userId,
                     resumeHeadline: body.profileSummary?.summary || '',
                     skills: body.profileSummary?.skills || [],
-                    Phone: body.phone ? parseInt(body.phone) : null,
-                    expectedSalary: body.expectedSalary ? parseInt(body.expectedSalary) : null,
-                    noticePeriod: body.noticePeriod ? parseInt(body.noticePeriod) : null
+                    Phone: body.personalDetails?.phone ? body.personalDetails.phone : null,
+                    expectedSalary: body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : null,
+                    noticePeriod: body.personalDetails?.noticePeriod
+                        ? parseInt(body.personalDetails.noticePeriod)
+                        : null,
                 }
             });
         } else {
             // Update existing profile
             userProfile = await prisma.userProfile.update({
                 where: {
-                    userId: userProfile.id
+                    userId: req.userId
                 },
                 data: {
                     resumeHeadline: body.profileSummary?.summary || userProfile.resumeHeadline,
                     skills: body.profileSummary?.skills || userProfile.skills,
-                    Phone: body.phone ? parseInt(body.phone) : userProfile.Phone,
-                    expectedSalary: body.expectedSalary ? parseInt(body.expectedSalary) : userProfile.expectedSalary,
-                    noticePeriod: body.noticePeriod ? parseInt(body.noticePeriod) : userProfile.noticePeriod
+                    Phone: body.personalDetails?.phone ? body.personalDetails.phone : userProfile.phone,
+                    expectedSalary: body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : userProfile.skills.expectedSalary,
+                    noticePeriod: body.personalDetails?.noticePeriod
+                        ? parseInt(body.personalDetails.noticePeriod)
+                        : null,
                 }
             });
         }
+
+        // Remove this problematic code block that's causing the error
+        // if (body.profileSummary){
+        //     await prisma.userProfile.update({
+        //         resumeHeadline: body.profileSummary?.summary || userProfile.resumeHeadline,
+        //             skills: body.profileSummary?.skills || userProfile.skills
+        //     })
+        // }
 
         // Handle education data if provided
         if (body.education && body.education.length > 0) {
@@ -132,25 +144,25 @@ export const updateProfile = async (req, res) => {
     }
 };
 
-export const updateProject = (req,res) =>{
-    
+export const updateProject = (req, res) => {
+
 }
 
 
 //adding new project to profile
-export const addProject = async(req,res)=>{
-    const body = req.body 
+export const addProject = async (req, res) => {
+    const body = req.body
     try {
-        const success =  projectValidator.safeParse(body)
-        if(!success.success){
+        const success = projectValidator.safeParse(body)
+        if (!success.success) {
             return res.status(403).json({
                 msg: "invalid inputs"
             })
         }
         await prisma.project.create({
-            data:{
-                title:body.title, 
-                from:body.from,
+            data: {
+                title: body.title,
+                from: body.from,
                 to: body.to,
                 details: body.details,
                 projectLink: body.projectLink,
@@ -158,7 +170,7 @@ export const addProject = async(req,res)=>{
             }
         })
         res.json({
-            msg:"project addded"
+            msg: "project addded"
         })
     } catch (error) {
         console.log("error while adding project")
@@ -168,48 +180,50 @@ export const addProject = async(req,res)=>{
     }
 }
 
-export const updateLinks = (req,res) =>{
-    
+export const updateLinks = (req, res) => {
+
 }
 
-export const updateLanguage = (req,res) =>{
-    
+export const updateLanguage = (req, res) => {
+
 }
 
-export const updatePublications = (req,res) =>{
-    
+export const updatePublications = (req, res) => {
+
 }
 
-export const ViewJobs = async(req,res) =>{
+export const ViewJobs = async (req, res) => {
     const data = req.params.name;
     try {
         const jobs = await prisma.job.findMany({
             where:
-                data?
-                {OR:[
+                data ?
                     {
-                        title: data
-                    },{
-                        location: data
-                    }
-                ]}: {}
+                        OR: [
+                            {
+                                title: data
+                            }, {
+                                location: data
+                            }
+                        ]
+                    } : {}
         })
 
         res.json(jobs)
     } catch (error) {
-        console.log("error while viewing job",error)
+        console.log("error while viewing job", error)
         res.json("error while getting jobs")
     }
 }
 
-export const viewAllJobs = async(req, res) => {
+export const viewAllJobs = async (req, res) => {
     try {
         const jobs = await prisma.job.findMany({
             include: {
                 jobdescription: true
             }
         });
-        
+
         res.json({
             success: true,
             data: jobs
@@ -223,48 +237,159 @@ export const viewAllJobs = async(req, res) => {
     }
 }
 
-export const applyJobs = async(req,res)=>{
-    const data = req.params.id 
+export const applyJobs = async (req, res) => {
+    const data = req.params.id
     try {
-        let appliedJobs = await prisma.user.findFirst({
-            where:{
+        // Check if user has already applied
+        let user = await prisma.user.findFirst({
+            where: {
                 id: req.userId
             },
-            select:{
+            select: {
                 applied: true
             }
-        })
-        appliedJobs.appliedJobs.push(data)
+        });
+        
+        // If user has already applied for this job
+        if (user.applied && user.applied.includes(data)) {
+            return res.status(400).json({
+                success: false,
+                msg: "You have already applied for this job"
+            });
+        }
+        
+        // Add job to user's applied jobs
+        let appliedJobs = user.applied || [];
+        appliedJobs.push(data);
+        
         await prisma.user.update({
-            where:{
+            where: {
                 id: req.userId
             },
-            data:{
-                applied:appliedJobs
+            data: {
+                applied: appliedJobs
             }
-        })
-        let appliedBy = await prisma.job.findFirst({
-            where:{
+        });
+        
+        // Add user to job's appliedBy
+        let job = await prisma.job.findFirst({
+            where: {
                 id: data
+            },
+            select: {
+                appliedBy: true
             }
-        })
-        appliedBy.appliedBy.push(req.userId)
+        });
+        
+        let appliedBy = job.appliedBy || [];
+        appliedBy.push(req.userId);
+        
         await prisma.job.update({
-            where:{
+            where: {
                 id: data 
             },
-            data:{
-                appliedBy:appliedBy
+            data: {
+                appliedBy: appliedBy
             }
-        })
+        });
+        
         res.json({
-            msg:"applied to job"
-        })
+            success: true,
+            msg: "Applied to job successfully"
+        });
     } catch (error) {
-        console.log("error while applying jobs",error)
+        console.log("error while applying jobs", error);
         res.status(500).json({
-            msg: "error while applying jobs"
-        })
+            success: false,
+            msg: "Error while applying for job"
+        });
     }
 }
 
+// Add this new function to your user_controller.js
+
+export const getUserApplications = async (req, res) => {
+    try {
+        // Get the user's applied jobs
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.userId
+            },
+            select: {
+                applied: true
+            }
+        });
+
+        if (!user || !user.applied || user.applied.length === 0) {
+            return res.json({
+                success: true,
+                data: []
+            });
+        }
+
+        // Fetch the job details for each applied job
+        const jobs = await prisma.job.findMany({
+            where: {
+                id: {
+                    in: user.applied
+                }
+            },
+            include: {
+                jobdescription: true
+            }
+        });
+
+        res.json({
+            success: true,
+            data: jobs
+        });
+    } catch (error) {
+        console.log("Error fetching user applications:", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error fetching your applications"
+        });
+    }
+};
+
+// Add this function to your user_controller.js file
+
+export const getUserProfile = async (req, res) => {
+    try {
+        console.log(req.userId)
+
+        const userData = await prisma.user.findUnique({
+            where: { id: req.userId },
+            include: {
+                userProfile: {
+                    include: {
+                        project: true,
+                        Education: true,
+                        Links: true,
+                        Publications: true,
+                        languages: true,
+                        experiences: true,
+                    },
+                },
+            },
+        });
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: userData,
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user profile',
+        });
+    }
+};

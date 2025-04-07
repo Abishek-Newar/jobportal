@@ -57,8 +57,10 @@ export const SignupController = async(req,res)=>{
 
 export const SigninController = async(req,res)=>{
     const body = req.body
+    console.log(body)
     try {
         const success = SigninValidator.safeParse(body)
+        console.log(success);
         if(!success.success){
             return res.status(401).json({
                 msg: "invalid inputs"
@@ -69,7 +71,7 @@ export const SigninController = async(req,res)=>{
                 email: body.email 
             }
         })
-
+        console.log(users);
         if(!users){
             return res.status(401).json({
                 msg: "user not found"
@@ -77,14 +79,14 @@ export const SigninController = async(req,res)=>{
         }
 
         const comparePass = await bcrypt.compare(body.password,users.password)
-
+        console.log(comparePass);
         if(!comparePass){
-            return res.json(401).status({
+            return res.status(401).json({
                 msg: "invalid password"
             })
         }
         const token = await genToken(users)
-
+        console.log(token)
         res.json({
             msg: "login successful",
             token,

@@ -1,6 +1,6 @@
 import express from "express"
 import authMiddleware from "../../lib/authMiddleware.js"
-import { addProject, applyJobs, updateProfile, uploadResume, viewAllJobs, ViewJobs } from "../controller/user_controller.js"
+import { addProject, applyJobs, getUserApplications, getUserProfile, updateProfile, uploadResume, viewAllJobs, ViewJobs } from "../controller/user_controller.js"
 
 export const userRouter = async(router) => {
     router.post("/user/uploadresume", authMiddleware, uploadResume)
@@ -9,4 +9,6 @@ export const userRouter = async(router) => {
     router.get("/user/jobs/all", viewAllJobs)
     router.get("/user/jobs/:name?", ViewJobs)
     router.post("/user/apply/:id", authMiddleware, applyJobs)
+    router.get("/user/applications", authMiddleware, getUserApplications)
+    router.get("/user/profile", authMiddleware, getUserProfile)
 }
