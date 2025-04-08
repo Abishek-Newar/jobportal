@@ -2,6 +2,7 @@ import React from 'react'
 import { BACKEND_URL } from '../../../lib'
 import axios from "axios"
 import JobCard from '../../components/JobCard'
+import EmployerJobCard from '../../components/EmployerJobCard'
 const ViewJobs = () => {
   const [data,setData] = React.useState([])
   React.useEffect(()=>{
@@ -17,10 +18,10 @@ const ViewJobs = () => {
     serverCall()
   },[])
   return (
-    <div className='p-10'>
+    <div className='p-10 flex flex-wrap gap-6'>
       {
         data.map((item,index)=>(
-          <JobCard item={item} buttonName='View Applications' />
+          <EmployerJobCard item={item}  />
         ))
       }
     </div>

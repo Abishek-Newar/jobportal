@@ -135,7 +135,7 @@ const Education = () => {
       
       // Navigate to profile page
       setTimeout(() => {
-        navigate('/profile');
+        navigate('/user-profile');
       }, 1000);
     } catch (error) {
       console.error('Error saving education and projects:', error);

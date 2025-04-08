@@ -7,12 +7,6 @@ const Sidebar = ({setPage}) => {
     },{
         name: "Add Jobs",
         link: ()=>{setPage("add")}
-    },{
-        name: "All Applications",
-        link: ()=>{setPage("allapp")}
-    },{
-        name: "Shorlisted",
-        link: ()=>{setPage("")}
     }]
   return (
     <div className='fixed w-[25%] min-h-screen'>
