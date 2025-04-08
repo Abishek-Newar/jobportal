@@ -113,7 +113,7 @@ export const viewApplications = async(req,res) => {
             }
         });
         
-        // Add the job information to each applicant
+        // Add the job information to  applicant
         const applicantsWithJobInfo = applicants.map(applicant => ({
             ...applicant,
             appliedJobs: jobApplicationMap[applicant.id] || []
