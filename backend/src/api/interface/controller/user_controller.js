@@ -41,19 +41,61 @@ export const updateProfile = async (req, res) => {
             }
         });
 
-        // Prepare the data to update/create
+        // Update main user table fields (name, email, etc.) if provided
+        const userUpdateData = {};
+        
+        // Handle different possible field names for user data
+        if (body.name || body.fullName) {
+            userUpdateData.name = body.name || body.fullName;
+        }
+        if (body.email) {
+            userUpdateData.email = body.email;
+        }
+        
+        // Update user table if there's data to update
+        if (Object.keys(userUpdateData).length > 0) {
+            await prisma.user.update({
+                where: {
+                    id: req.userId
+                },
+                data: userUpdateData
+            });
+            console.log("Updated user data:", userUpdateData);
+        }
+
+        // Prepare the data to update/create for userProfile
         const profileData = {
             userId: req.userId,
-            // Handle both possible data structures
-            resumeHeadline: body.userProfile?.resumeHeadline || body.profileSummary?.summary || (userProfile?.resumeHeadline || ''),
-            skills: body.userProfile?.skills || body.profileSummary?.skills || (userProfile?.skills || []),
-            Phone: body.userProfile?.Phone || body.personalDetails?.phone || userProfile?.Phone || null,
-            expectedSalary: body.userProfile?.expectedSalary || 
-                (body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : null) ||
-                (userProfile?.expectedSalary || null),
-            noticePeriod: body.userProfile?.noticePeriod ||
-                (body.personalDetails?.noticePeriod ? parseInt(body.personalDetails.noticePeriod) : null) ||
-                (userProfile?.noticePeriod || null),
+            // Resume Headline - handle multiple possible sources
+            resumeHeadline: body.resumeHeadline || 
+                           body.userProfile?.resumeHeadline || 
+                           body.profileSummary?.summary || 
+                           (userProfile?.resumeHeadline || ''),
+            
+            // Skills - handle multiple possible sources and formats
+            skills: body.skills || 
+                   body.userProfile?.skills || 
+                   body.profileSummary?.skills || 
+                   (userProfile?.skills || []),
+            
+            // Phone - handle multiple possible sources
+            Phone: body.phone || 
+                  body.Phone || 
+                  body.userProfile?.Phone || 
+                  body.personalDetails?.phone || 
+                  userProfile?.Phone || null,
+            
+            // Expected Salary - handle multiple possible sources
+            expectedSalary: body.expectedSalary ? parseFloat(body.expectedSalary) :
+                           body.userProfile?.expectedSalary ? parseFloat(body.userProfile.expectedSalary) :
+                           body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) :
+                           (userProfile?.expectedSalary || null),
+            
+            // Notice Period - handle multiple possible sources
+            noticePeriod: body.noticePeriod ? parseInt(body.noticePeriod) :
+                         body.userProfile?.noticePeriod ? parseInt(body.userProfile.noticePeriod) :
+                         body.personalDetails?.noticePeriod ? parseInt(body.personalDetails.noticePeriod) :
+                         (userProfile?.noticePeriod || null),
         };
 
         console.log("Profile data to save:", profileData);
@@ -83,17 +125,25 @@ export const updateProfile = async (req, res) => {
 
         // Handle education data if provided
         if (body.education && body.education.length > 0) {
+            // First, delete existing education records for this user
+            await prisma.education.deleteMany({
+                where: {
+                    userId: userProfile.id
+                }
+            });
+            
+            // Then create new education records
             for (const edu of body.education) {
                 await prisma.education.create({
                     data: {
-                        education: edu.degree || '',
-                        specialization: edu.field || '',
-                        institute: edu.institution || '',
-                        course: edu.degree || '',
-                        courseType: 'Full-time', // Default value
-                        from: new Date(edu.startYear, 0, 1),
-                        to: edu.current ? new Date() : new Date(edu.endYear, 0, 1),
-                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                        education: edu.degree || edu.education || '',
+                        specialization: edu.field || edu.specialization || '',
+                        institute: edu.institution || edu.institute || '',
+                        course: edu.degree || edu.course || '',
+                        courseType: edu.courseType || 'Full-time',
+                        from: new Date(edu.startYear || edu.from),
+                        to: edu.current ? new Date() : new Date(edu.endYear || edu.to),
+                        userId: userProfile.id
                     }
                 });
             }
@@ -101,15 +151,23 @@ export const updateProfile = async (req, res) => {
 
         // Handle projects data if provided
         if (body.projects && body.projects.length > 0) {
+            // First, delete existing project records for this user
+            await prisma.project.deleteMany({
+                where: {
+                    userId: userProfile.id
+                }
+            });
+            
+            // Then create new project records
             for (const proj of body.projects) {
                 await prisma.project.create({
                     data: {
                         title: proj.title,
-                        details: proj.description || '',
-                        projectLink: proj.link || '',
-                        from: new Date(),
-                        to: new Date(),
-                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                        details: proj.description || proj.details || '',
+                        projectLink: proj.link || proj.projectLink || '',
+                        from: proj.from ? new Date(proj.from) : new Date(),
+                        to: proj.to ? new Date(proj.to) : new Date(),
+                        userId: userProfile.id
                     }
                 });
             }
@@ -117,6 +175,14 @@ export const updateProfile = async (req, res) => {
 
         // Handle experiences data if provided
         if (body.experiences && body.experiences.length > 0) {
+            // First, delete existing experience records for this user
+            await prisma.experience.deleteMany({
+                where: {
+                    userId: userProfile.id
+                }
+            });
+            
+            // Then create new experience records
             for (const exp of body.experiences) {
                 await prisma.experience.create({
                     data: {
@@ -127,16 +193,33 @@ export const updateProfile = async (req, res) => {
                         startDate: new Date(exp.startDate),
                         endDate: exp.current ? null : new Date(exp.endDate),
                         current: exp.current || false,
-                        userId: userProfile.id // Use userProfile.id instead of req.userId
+                        userId: userProfile.id
                     }
                 });
             }
         }
 
+        // Get the updated user data to return
+        const updatedUser = await prisma.user.findUnique({
+            where: { id: req.userId },
+            include: {
+                userProfile: {
+                    include: {
+                        project: true,
+                        Education: true,
+                        Links: true,
+                        Publications: true,
+                        languages: true,
+                        experiences: true,
+                    }
+                }
+            }
+        });
+
         res.status(200).json({
             success: true,
             msg: "Profile updated successfully",
-            data: userProfile
+            data: updatedUser
         });
     } catch (error) {
         console.log("Error updating profile:", error);
