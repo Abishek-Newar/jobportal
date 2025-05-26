@@ -95,7 +95,7 @@ const JobAdd = () => {
             <LabelledMarkdownEditor id="experience" value={data.experience} maxHeigth="200px" name="Experience" placeholder="..." onChange={(value) => setData(prevData => ({ ...prevData, experience: value }))} />
             <Input id="work" name="Work Location" type="text" placeholder="Mohali" onChange={(e)=>{handleChange("worklocation",e)}} />
             <Input id="deadline" name="Deadline" type="date" placeholder="" onChange={(e)=>{handleChange("deadline",e)}} />
-            <button className='w-full h-12 bg-orange-400 hover:bg-orange-600 transition-all ease-linear duration-500 rounded-md text-white text-xl font-bold' type="submit">Post</button>
+            <button className='h-10 bg-[#3a7a64] rounded-lg text-xl cursor-pointer text-white hover:bg-[#275446] transition duration-300' type="submit">Post</button>
          </form>
     </div>
   )

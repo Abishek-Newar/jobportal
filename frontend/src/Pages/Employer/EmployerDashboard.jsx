@@ -8,7 +8,7 @@ const EmployerDashboard = () => {
     const navigate = useNavigate()
     React.useEffect(()=>{
         if(!localStorage.getItem("token") || localStorage.getItem("type") !== "employer"){
-            navigate("/employee/auth")
+            navigate("/employer/auth")
         }
     },[])
     const [page,setPage] = React.useState("job")

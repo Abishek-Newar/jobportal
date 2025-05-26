@@ -52,7 +52,7 @@ function Signup({ setType }) {
       <input className={styles.inputs} type="text" onChange={(e) => setName(e.target.value)} />
 
       <label className={styles.labels}>Email</label>
-      <input className={styles.inputs} type="text" placeholder="aiman@gmail.com" onChange={(e) => setEmail(e.target.value)} />
+      <input className={styles.inputs} type="text" placeholder="example@xyz.com" onChange={(e) => setEmail(e.target.value)} />
 
       <label className={styles.labels}>Password</label>
       <input className={styles.inputs} type="password" onChange={(e) => setPassword(e.target.value)} />

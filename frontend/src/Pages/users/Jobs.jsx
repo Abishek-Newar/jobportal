@@ -5,7 +5,7 @@ import { BACKEND_URL } from '../../../lib';
 import axios from "axios"
 import Navbar from '../../components/Navbar';
 import { toast, Toaster } from 'sonner';
-import Footer from '../../Model/Landing/Footer';
+
 
 function Jobs() {
     const [jobs, setJobs] = useState([]);
@@ -31,9 +31,9 @@ function Jobs() {
         try {
             const response = await axios.get(`${BACKEND_URL}/user/jobs/${searchQuery}`)
             console.log(response.data)
-            if(response.data.length === 0){
+            if (response.data.length === 0) {
                 toast.error("No jobs found")
-            }else{
+            } else {
                 setJobs(response.data);
             }
             setVisibleJobs(9);
@@ -69,10 +69,10 @@ function Jobs() {
                     </div>
                     :
 
-                    <div className="min-h-screen bg-[#080808] pt-[15vh] pb-6">
+                    <div className="min-h-screen bg-white pt-[15vh] pb-6">
                         <Navbar />
                         <div className="max-w-7xl mx-auto">
-                            <h1 className="text-4xl font-bold text-white mb-8">Find Your Dream Job</h1>
+                            <h1 className="text-4xl font-bold text-black mb-8">Find Your Dream Job</h1>
 
                             <form onSubmit={handleSearch} className="mb-8">
                                 <div className="flex gap-4 max-w-2xl">
@@ -82,13 +82,13 @@ function Jobs() {
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder="Search for jobs..."
-                                            className="w-full z-0 px-4 py-3 rounded-lg bg-[#121212] border border-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-transparent outline-none text-white placeholder-gray-400"
+                                            className="w-full z-0 px-4 py-3 rounded-lg bg-white border focus:ring-2 focus:ring-gray-100 focus:border-transparent outline-none text-black placeholder-gray-400"
                                         />
                                         <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                                     </div>
                                     <button
                                         type="submit"
-                                        className="px-6 py-3 bg-white text-[#080808] rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold"
+                                        className="px-6 py-3 border text-[#080808] rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold"
                                     >
                                         Search
                                     </button>
@@ -101,13 +101,13 @@ function Jobs() {
                                     </div>
                                     :
                                     // [1,2,3,4,5]
-                                    <div> 
+                                    <div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                                             {visibleJobsList.map((job) => (
-                                                <JobCard 
-                                                    key={job.id} 
-                                                    item={job} 
-                                                    buttonName={appliedJobs.includes(job.id) ? "Applied" : "Apply"} 
+                                                <JobCard
+                                                    key={job.id}
+                                                    item={job}
+                                                    buttonName={appliedJobs.includes(job.id) ? "Applied" : "Apply"}
                                                     onApplySuccess={handleApplySuccess}
                                                 />
                                             ))}
@@ -128,7 +128,6 @@ function Jobs() {
                         </div>
                     </div>
             }
-            <Footer />
         </>
 
     );

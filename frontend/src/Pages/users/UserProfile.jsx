@@ -4,8 +4,15 @@ import axios from "axios"
 import { BACKEND_URL } from '../../../lib';
 import Navbar from '../../components/Navbar';
 import { toast, Toaster } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
+  const navigate = useNavigate()
+  useEffect(()=>{
+    if(!localStorage.getItem('token') || localStorage.getItem('type') !== 'user'){
+      navigate('/auth')
+    }
+  },[])
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     userProfile: { 
@@ -87,13 +94,15 @@ const Profile = () => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [section, field] = name.split('.');
-      setProfile(prev => ({
-        ...prev,
-        userProfile: {
-          ...prev.userProfile,
-          [section]: value
-        }
-      }));
+      if (section === 'userProfile') {
+        setProfile(prev => ({
+          ...prev,
+          userProfile: {
+            ...prev.userProfile,
+            [field]: value
+          }
+        }));
+      }
     } else {
       setProfile(prev => ({
         ...prev,
@@ -113,8 +122,7 @@ const Profile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsEditing(false);
     
     try {
@@ -794,22 +802,6 @@ const Profile = () => {
     );
   };
 
-  // Add this function before the return statement
-    const renderSection = (title, items = [], renderItem) => {
-      return (
-        <div className="mb-8">
-          <h3 className="text-xl font-bold text-white mb-4">{title}</h3>
-          {items && items.length > 0 ? (
-            <div className="space-y-4">
-              {items.map(renderItem)}
-            </div>
-          ) : (
-            <p className="text-gray-400">No {title.toLowerCase()} added yet</p>
-          )}
-        </div>
-      );
-    };
-  
   if (loading) {
     return (
       <>
@@ -824,14 +816,15 @@ const Profile = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[#080808] p-6 pt-[15vh]">
+      <Toaster />
+      <div className="min-h-screen bg-white p-6 pt-[15vh]">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold text-white">Profile</h1>
+            <h1 className="text-4xl font-bold text-black">Profile</h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-6 py-3 bg-white text-[#080808] rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold"
+                className="px-6 py-3 border text-black rounded-lg hover:bg-black hover:text-white transition-colors duration-200 font-semibold"
               >
                 Edit Profile
               </button>
@@ -839,13 +832,13 @@ const Profile = () => {
               <div className="flex gap-4">
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-semibold"
+                  className="px-6 py-3 border text-black rounded-lg hover:bg-black hover:text-white transition-colors duration-300 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="px-6 py-3 bg-white text-[#080808] rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold"
+                  className="px-6 py-3 bg-black text-white rounded-lg hover:text-white hover:bg-black/80 transition-colors duration-300 font-semibold"
                 >
                   Save Changes
                 </button>
@@ -854,7 +847,7 @@ const Profile = () => {
           </div>
 
           <div className="bg-[#121212] rounded-xl shadow-lg p-8 border border-gray-800">
-            <form onSubmit={handleSubmit}>
+            <form>
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-white mb-4">Basic Information</h3>
                 {renderField(<User className="w-5 h-5 text-blue-400" />, 'Full Name', 'name', profile.name)}
@@ -914,52 +907,11 @@ const Profile = () => {
                 </div>
               </div>
 
-              {renderSection('Experience', profile.userProfile?.experiences, (experience) => (
-                <div key={experience.id} className="bg-[#1a1a1a] p-4 rounded-lg border border-gray-700">
-                  <h4 className="text-white font-semibold">{experience.title}</h4>
-                  <p className="text-gray-400">{experience.company} • {experience.location}</p>
-                  <p className="text-gray-400">
-                    {new Date(experience.startDate).toLocaleDateString()} - 
-                    {experience.current ? 'Present' : new Date(experience.endDate).toLocaleDateString()}
-                  </p>
-                  <p className="text-gray-300 mt-2">{experience.description}</p>
-                </div>
-              ))}
+              {renderExperienceSection()}
 
-              {renderSection('Projects', profile.userProfile?.project, (project) => (
-                <div key={project.id} className="bg-[#1a1a1a] p-4 rounded-lg border border-gray-700">
-                  <h4 className="text-white font-semibold">{project.title}</h4>
-                  <p className="text-gray-400">
-                    {new Date(project.from).toLocaleDateString()} - 
-                    {new Date(project.to).toLocaleDateString()}
-                  </p>
-                  <p className="text-gray-300 mt-2">{project.details}</p>
-                  {project.projectLink && (
-                    <a 
-                      href={project.projectLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-400 hover:text-blue-300 mt-2 inline-block"
-                    >
-                      View Project
-                    </a>
-                  )}
-                </div>
-              ))}
+              {renderProjectSection()}
 
-              {renderSection('Education', profile.userProfile?.Education, (education) => (
-                <div key={education.id} className="bg-[#1a1a1a] p-4 rounded-lg border border-gray-700">
-                  <h4 className="text-white font-semibold">{education.education}</h4>
-                  <p className="text-gray-400">{education.institute}</p>
-                  <p className="text-gray-400">{education.course} • {education.specialization}</p>
-                  <p className="text-gray-400">{education.courseType}</p>
-                  <p className="text-gray-400">
-                    {new Date(education.from).toLocaleDateString()} - 
-                    {new Date(education.to).toLocaleDateString()}
-                  </p>
-                  {education.grade && <p className="text-gray-300 mt-2">Grade: {education.grade}</p>}
-                </div>
-              ))}
+              {renderEducationSection()}
             </form>
           </div>
         </div>

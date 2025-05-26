@@ -34,7 +34,7 @@ const JobCard = ({item, buttonName, onApplySuccess}) => {
     };
     
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full">
+    <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full  hover:shadow-2xl">
       <div className="border-b pb-4 mb-4">
         <h2 className="text-2xl font-bold text-gray-800">{item.title}</h2>
         <p className="text-gray-600 mt-2">{item.jobdescription.description}</p>
@@ -115,7 +115,7 @@ const JobCard = ({item, buttonName, onApplySuccess}) => {
           <div className="flex items-center gap-2">
             <button 
               onClick={handleApply}
-              className='w-30 h-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-md'
+              className='h-10 w-28 bg-[#3a7a64] rounded-lg text-xl cursor-pointer text-white hover:bg-[#275446] transition duration-300'
             >
               {buttonName}
             </button>

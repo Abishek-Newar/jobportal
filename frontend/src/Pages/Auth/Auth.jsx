@@ -1,10 +1,10 @@
-import React from 'react'
+// import React from 'react'
 import SignIn from '../../Model/user/SignIn/Signin'
 import Signup from '../../Model/user/SignUp/Signup'
 import { useState } from 'react'
 import styles from './auth.module.css'
-import Navbar from '../../components/Navbar'
-import Hero from '../../Model/Landing/Hero'
+// import Navbar from '../../components/Navbar'
+// import Hero from '../../Model/Landing/Hero'
 
 const Auth = () => {
   const [type,setType] = useState("signup")

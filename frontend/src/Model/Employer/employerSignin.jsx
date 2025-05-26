@@ -38,11 +38,11 @@ const EmployerSignin = ({authType}) => {
         <Toaster />
         <h1 className='text-center font-logo text-3xl'>SIGN IN</h1>
         <div className='flex flex-col gap-2'>
-        <Input type="email" placeholder="john@gmail.com" name="Email" id="email" onChange={(e)=>handleChange("email",e)}  />
+        <Input type="email" placeholder="example@xyz.com" name="Email" id="email" onChange={(e)=>handleChange("email",e)}  />
         <Input type="password" placeholder="" name="Password" id="password" onChange={(e)=>handleChange("password",e)}  />
         </div>
-        <button className='w-full bg-orange-400 h-10 font-bold text-white rounded-lg ' onClick={handleSubmit}>LOGIN</button>
-        <p className='text-stone-500'>Don't have a account? <a className='underline cursor-pointer hover:text-black' onClick={()=>{authType("signup")}}>Signup</a></p>
+        <button className='h-10 w-30 bg-[#3A7A64] rounded-[10px] text-[20px] text-white cursor-pointer hover:bg-[#275446] transition duration-300' onClick={handleSubmit}>LOGIN</button>
+        <p className='text-secondaryText'>Don't have an account? <a className='underline cursor-pointer hover:text-black' onClick={()=>{authType("signup")}}>Signup</a></p>
     </div>
   )
 }

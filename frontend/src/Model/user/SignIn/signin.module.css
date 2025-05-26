@@ -1,58 +1,102 @@
-
 .form{
     border: 2px solid white;
     background-color: white;
     border-radius: 15px;
-    width: 400px;
-    height: auto;
+    width: 100%;
+    max-width: 400px;
+    min-height: auto;
     padding: 30px;
     display: flex;
     flex-direction: column;
-    gap:10px;
-    
+    gap: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .top{
     margin:0;
     text-align: center;
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    margin-bottom: 8px;
 }
 .btn{
     border: 2px solid  rgb(58, 122, 100);
-    height:40px;
+    min-height: 44px;
     width: 100%;
     background-color:  rgb(58, 122, 100);
     border-radius: 10px;
-    font-size: 20px;
+    font-size: clamp(16px, 3vw, 20px);
     cursor: pointer;
     color: white;
+    transition: all 0.3s ease;
+    margin-top: 8px;
 }
 .btn:hover{
     background-color:  rgb(39, 84, 70);
     border: 2px solid  rgb(39, 84, 70);
-    transition: 1s;
+    transform: translateY(-1px);
 }
 .labels{
     display: flex;
     flex-direction: column;
-    gap:5px;
+    gap: 6px;
+    font-size: clamp(14px, 2.5vw, 16px);
+    font-weight: 500;
+    color: #374151;
 }
 .inputs{
     width: 100%;
-    height:30px;
+    min-height: 44px;
     border-radius: 10px;
     border: 2px solid rgb(215, 209, 209);
     cursor: pointer;
-    padding: 0 10px;
+    padding: 0 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
-.inputs:hover{
+.inputs:hover,
+.inputs:focus{
     border: 2px solid  rgb(58, 122, 100);
-    transition: 1s;
+    outline: none;
 }
 .texts{
     margin: 0;
 }
 .p{
-   cursor: pointer; 
+    cursor: pointer;
+    text-align: center;
+    font-size: clamp(14px, 2.5vw, 16px);
+    margin-top: 8px;
 }
-.p:hover{
+.p span{
+    color: rgb(58, 122, 100);
+    font-weight: 500;
+}
+.p span:hover{
     text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form {
+        padding: 24px;
+        gap: 14px;
+        margin: 0 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form {
+        padding: 20px;
+        gap: 12px;
+        margin: 0 8px;
+    }
+    
+    .inputs {
+        min-height: 48px;
+        padding: 0 16px;
+    }
+    
+    .btn {
+        min-height: 48px;
+    }
 }
