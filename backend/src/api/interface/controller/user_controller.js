@@ -30,7 +30,9 @@ export const uploadResume = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     const body = req.body;
-    console.log(req.userId)
+    console.log("Request body:", body);
+    console.log("User ID:", req.userId);
+    
     try {
         // Check if user profile exists
         let userProfile = await prisma.userProfile.findUnique({
@@ -39,20 +41,29 @@ export const updateProfile = async (req, res) => {
             }
         });
 
+        // Prepare the data to update/create
+        const profileData = {
+            userId: req.userId,
+            // Handle both possible data structures
+            resumeHeadline: body.userProfile?.resumeHeadline || body.profileSummary?.summary || (userProfile?.resumeHeadline || ''),
+            skills: body.userProfile?.skills || body.profileSummary?.skills || (userProfile?.skills || []),
+            Phone: body.userProfile?.Phone || body.personalDetails?.phone || userProfile?.Phone || null,
+            expectedSalary: body.userProfile?.expectedSalary || 
+                (body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : null) ||
+                (userProfile?.expectedSalary || null),
+            noticePeriod: body.userProfile?.noticePeriod ||
+                (body.personalDetails?.noticePeriod ? parseInt(body.personalDetails.noticePeriod) : null) ||
+                (userProfile?.noticePeriod || null),
+        };
+
+        console.log("Profile data to save:", profileData);
+
         // If profile doesn't exist, create it
         if (!userProfile) {
             userProfile = await prisma.userProfile.create({
-                data: {
-                    userId: req.userId,
-                    resumeHeadline: body.profileSummary?.summary || '',
-                    skills: body.profileSummary?.skills || [],
-                    Phone: body.personalDetails?.phone ? body.personalDetails.phone : null,
-                    expectedSalary: body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : null,
-                    noticePeriod: body.personalDetails?.noticePeriod
-                        ? parseInt(body.personalDetails.noticePeriod)
-                        : null,
-                }
+                data: profileData
             });
+            console.log("Created new profile:", userProfile);
         } else {
             // Update existing profile
             userProfile = await prisma.userProfile.update({
@@ -60,24 +71,15 @@ export const updateProfile = async (req, res) => {
                     userId: req.userId
                 },
                 data: {
-                    resumeHeadline: body.profileSummary?.summary || userProfile.resumeHeadline,
-                    skills: body.profileSummary?.skills || userProfile.skills,
-                    Phone: body.personalDetails?.phone ? body.personalDetails.phone : userProfile.phone,
-                    expectedSalary: body.personalDetails?.expectedSalary ? parseFloat(body.personalDetails.expectedSalary) : userProfile.skills.expectedSalary,
-                    noticePeriod: body.personalDetails?.noticePeriod
-                        ? parseInt(body.personalDetails.noticePeriod)
-                        : null,
+                    resumeHeadline: profileData.resumeHeadline,
+                    skills: profileData.skills,
+                    Phone: profileData.Phone,
+                    expectedSalary: profileData.expectedSalary,
+                    noticePeriod: profileData.noticePeriod,
                 }
             });
+            console.log("Updated profile:", userProfile);
         }
-
-        // Remove this problematic code block that's causing the error
-        // if (body.profileSummary){
-        //     await prisma.userProfile.update({
-        //         resumeHeadline: body.profileSummary?.summary || userProfile.resumeHeadline,
-        //             skills: body.profileSummary?.skills || userProfile.skills
-        //     })
-        // }
 
         // Handle education data if provided
         if (body.education && body.education.length > 0) {
@@ -133,13 +135,15 @@ export const updateProfile = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            msg: "Profile updated successfully"
+            msg: "Profile updated successfully",
+            data: userProfile
         });
     } catch (error) {
         console.log("Error updating profile:", error);
         res.status(500).json({
             success: false,
-            msg: "Error updating profile"
+            msg: "Error updating profile",
+            error: error.message
         });
     }
 };
