@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from  "./navbar.module.css"
-import {useNavigate} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import { Menu, X } from 'lucide-react'
 
 function Navbar() {
@@ -20,7 +20,7 @@ function Navbar() {
     <div>
       <nav className={styles.Navbar}>
         <div>
-          <h3 className={styles.logo}>SKILLMATCH</h3>
+          <Link to="/"><h3 className={styles.logo}>SKILLMATCH</h3></Link>
         </div>
         
         {/* Desktop Menu */}

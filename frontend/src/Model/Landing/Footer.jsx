@@ -66,7 +66,7 @@ function Footer() {
 
         {/* Company Info Section */}
         <div className={styles.footerSection}>
-          <h3 className={styles.footerHeading}>SKILLMATCH</h3>
+          <Link to="/"><h3 className={styles.footerHeading}>SKILLMATCH</h3></Link>
           <p className={styles.footerDescription}>
             Connecting talent with opportunity
           </p>
