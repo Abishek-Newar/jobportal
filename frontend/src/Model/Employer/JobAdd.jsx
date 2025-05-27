@@ -53,7 +53,7 @@ const JobAdd = () => {
   return (
     <div className='p-10 '>
          <h1 className='text-center text-2xl uppercase underline font-bold'>Add Job</h1>
-         <form className='px-32 flex flex-col gap-5' onSubmit={handleSubmit}>
+         <form className=' lg:px-32 flex flex-col gap-5' onSubmit={handleSubmit}>
             <Input id="title" type="text" name="Title" placeholder="Software Engineer" onChange={(e)=>{handleChange("title",e)}} />
             <LabelledMarkdownEditor value={data.description} id="description" name="Description" maxHeigth="200px" placeholder="...." onChange={(value) => setData(prevData => ({ ...prevData, description: value }))} />
             <Input id="pay" type="number" name="Pay" placeholder="Software Engineer" onChange={(e)=>{handleChange("pay",e)}} />
