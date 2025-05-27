@@ -18,12 +18,15 @@ const ViewJobs = () => {
     serverCall()
   },[])
   return (
-    <div className='p-10 flex flex-wrap gap-6'>
+    <div className='w-full min-h-screen pt-16'>
+      <h1 className=' text-center text-3xl'>Jobs</h1>
+      <div className='p-10 flex w-full flex-wrap gap-6'>
       {
         data.map((item,index)=>(
           <EmployerJobCard item={item}  />
         ))
       }
+    </div>
     </div>
   )
 }
