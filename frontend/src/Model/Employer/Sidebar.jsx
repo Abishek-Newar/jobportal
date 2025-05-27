@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Sidebar = ({setPage}) => {
     const obj = [{
@@ -11,7 +12,7 @@ const Sidebar = ({setPage}) => {
   return (
     <div className='fixed w-[25%] min-h-screen'>
         <div className='bg-[#3a7a64] min-h-screen text-white'>
-        <h1 className=' h-24 border flex justify-center items-center text-2xl font-bold '>SkillMatch</h1>
+        <Link to="/"><h1 className=' h-24 border flex justify-center items-center text-2xl font-bold '>SkillMatch</h1></Link>
         <div>
             {
                 obj.map((item,index)=>(
